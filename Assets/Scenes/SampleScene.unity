@@ -574,7 +574,7 @@ Transform:
   m_GameObject: {fileID: 53354958}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.14, z: 0}
+  m_LocalPosition: {x: 0, y: 0.171, z: -0.034}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2262,11 +2262,73 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ba17c2a452cbf6469a9db81f9b74db5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _controller: {fileID: 0}
+  _animator: {fileID: 0}
+  _moveAction:
+    m_Name: Move
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 5e818598-79d9-4d89-b86d-ff76b61a729c
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  _moveInput: {x: 0, y: 0}
+  _jumpAction:
+    m_Name: Jump
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 670d0a4f-2eb2-43ed-8e1b-5302c711afb1
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  _lookAction:
+    m_Name: Look
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 812ec78a-f2cd-42b8-9a24-253f7f64f0d8
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  _lookInput: {x: 0, y: 0}
+  _aimAction:
+    m_Name: Aim
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 9a87c49c-ec0b-4c34-9049-36eeb31e62b6
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  _grabAction:
+    m_Name: Grab
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 5245e4c7-ec7e-4eb9-8da8-98a368af4a1f
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  _throwAction:
+    m_Name: Throw
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: c211d914-e92f-40a0-851c-3ab6311d1fd8
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  jumpTimeOut: 0.5
+  fallTimeOut: 0.15
   _movementSpeed: 6
   _jumpHeight: 2
   _pushForce: 10
   _smoothTime: 0.2
+  _turnSmoothVelocity: 0
   _speedChangeRate: 10
+  _animationSpeed: 0
   _gravity: -9.81
   _playerGravity: {x: 0, y: 0, z: 0}
   _sensor: {fileID: 53354959}
@@ -2274,6 +2336,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   _sensorRadius: 0.28
+  _mainCamera: {fileID: 0}
   _hands: {fileID: 425225526}
   _grabedObject: {fileID: 0}
   _handsSensorSize: {x: 0, y: 0, z: 0}

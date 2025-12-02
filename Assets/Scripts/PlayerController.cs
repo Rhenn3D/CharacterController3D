@@ -7,29 +7,38 @@ public class PlayerController : MonoBehaviour
 {
 
     //Componentes
-    private CharacterController _controller;
-    private Animator _animator;
+    public CharacterController _controller;
+    public Animator _animator;
     
 
     //Inputs
-    private InputAction _moveAction;
-    private Vector2 _moveInput;
-    private InputAction _jumpAction;
-    private InputAction _lookAction;
-    private Vector2 _lookInput;
-    private InputAction _aimAction;
-    private InputAction _grabAction;
-    private InputAction _throwAction;
+    public InputAction _moveAction;
+    public Vector2 _moveInput;
+    public InputAction _jumpAction;
+    public InputAction _lookAction;
+    public Vector2 _lookInput;
+    public InputAction _aimAction;
+    public InputAction _grabAction;
+    public InputAction _throwAction;
     float targetAngle;
 
-    [SerializeField] private float _movementSpeed = 6;
-    [SerializeField] private float _jumpHeight = 2;
-    [SerializeField] private float _pushForce = 10;
-    [SerializeField] private float _smoothTime = 0.2f;
-    private float _turnSmoothVelocity;
-    [SerializeField] private float _speedChangeRate = 10f;
+    public float jumpTimeOut = 0.5f;
+
+    public float fallTimeOut = 0.15f;
+
+    float _jumpTimeOutDelta;
+    float _fallTimeOutDelta;
+
+
+
+    [SerializeField] public float _movementSpeed = 6;
+    [SerializeField] public float _jumpHeight = 2;
+    [SerializeField] public float _pushForce = 10;
+    [SerializeField] public float _smoothTime = 0.2f;
+    public float _turnSmoothVelocity;
+    [SerializeField] public float _speedChangeRate = 10f;
     float _speed;
-    private float _animationSpeed;
+    public float _animationSpeed;
     
     float _sprintSpeed = 8;
 
@@ -37,23 +46,23 @@ public class PlayerController : MonoBehaviour
 
 
     //Gravedad
-    [SerializeField] private float _gravity = -9.81f;
-    [SerializeField] private Vector3 _playerGravity;
+    [SerializeField] public float _gravity = -9.81f;
+    [SerializeField] public Vector3 _playerGravity;
 
     //Ground Sensor
     [SerializeField] Transform _sensor;
     [SerializeField] LayerMask _groundLayer;
     [SerializeField] float _sensorRadius = 4;
 
-    private Transform _mainCamera;
+    public Transform _mainCamera;
 
     //Coger
-    [SerializeField] private Transform _hands;
-    [SerializeField] private Transform _grabedObject;
-    [SerializeField] private Vector3 _handsSensorSize;
+    [SerializeField] public Transform _hands;
+    [SerializeField] public Transform _grabedObject;
+    [SerializeField] public Vector3 _handsSensorSize;
 
     //Lanzar
-    [SerializeField] private float _throwForce = 20;
+    [SerializeField] public float _throwForce = 20;
 
 
     void Awake()
@@ -68,6 +77,12 @@ public class PlayerController : MonoBehaviour
         _throwAction = InputSystem.actions["Throw"];
 
         _mainCamera = Camera.main.transform;
+    }
+
+    void Start()
+    {
+        _jumpTimeOutDelta = jumpTimeOut;
+        _fallTimeOutDelta = fallTimeOut;
     }
 
 
@@ -138,7 +153,7 @@ public class PlayerController : MonoBehaviour
     {
         
         Vector3 direction = new Vector3(_moveInput.x, 0, _moveInput.y);
-        float targetSpeed;
+        /*float targetSpeed;
         if(isSprinting)
         {
             targetSpeed = _sprintSpeed;
@@ -146,7 +161,9 @@ public class PlayerController : MonoBehaviour
         else
         {
             targetSpeed = _movementSpeed;
-        }
+        }*/
+
+        float targetSpeed = _movementSpeed;
 
         if(direction == Vector3.zero)
         {
@@ -158,7 +175,7 @@ public class PlayerController : MonoBehaviour
         float speedOffset = 0.1f;
         if(_currentSpeed < targetSpeed - speedOffset || _currentSpeed > targetSpeed + speedOffset)
         {
-            _speed = Mathf.Lerp(_currentSpeed, targetSpeed, Time.deltaTime * _speedChangeRate );
+            _speed = Mathf.Lerp(_currentSpeed, targetSpeed  * direction.magnitude, Time.deltaTime * _speedChangeRate );
 
             _speed = Mathf.Round(_speed * 1000f) / 1000f;
         }
@@ -200,7 +217,7 @@ public class PlayerController : MonoBehaviour
         }
             Vector3 moveDirection = Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
 
-            _controller.Move(moveDirection.normalized * (_speed * Time.deltaTime) + _playerGravity * Time.deltaTime);
+            _controller.Move(_speed * Time.deltaTime * moveDirection.normalized  + _playerGravity * Time.deltaTime);
     }
 
     void AimMovement()
@@ -263,8 +280,13 @@ public class PlayerController : MonoBehaviour
     void Jump()
     {
 
+        if(_jumpTimeOutDelta <= 0)
+        {
+            _playerGravity.y = Mathf.Sqrt(_jumpHeight * -2 * _gravity);
+        }
+
         _animator.SetBool("IsJumping", true);
-        _playerGravity.y = Mathf.Sqrt(_jumpHeight * -2 * _gravity);
+        
 
         //_controller.Move(_playerGravity * Time.deltaTime);
     }
@@ -283,8 +305,12 @@ public class PlayerController : MonoBehaviour
         }*/
 
         _animator.SetBool("Grounded", IsGrounded());
+
+        
         if(IsGrounded())
         {
+            _fallTimeOutDelta = fallTimeOut;
+
             _animator.SetBool("Jump", false);
             _animator.SetBool("Fall", false);
 
@@ -292,11 +318,26 @@ public class PlayerController : MonoBehaviour
             {
                 _playerGravity.y = -2;
             }
+
+            if(_jumpTimeOutDelta >= 0)
+            {
+                _jumpTimeOutDelta -= Time.deltaTime;
+            }
             
         }
         else
             {
+                _jumpTimeOutDelta = jumpTimeOut;
+
+                if(_fallTimeOutDelta >= 0)
+            {
+                _fallTimeOutDelta -= Time.deltaTime;
+            }
+            else
+            {
                 _animator.SetBool("Fall", true);
+            }
+                
                 _playerGravity.y += _gravity * Time.deltaTime;
             }
 
